@@ -1,0 +1,60 @@
+LOGIN
+url			: /login
+method		: POST
+parameter
+	. username
+	. password
+return
+	. status
+	. key
+failed
+	. status
+
+
+REGISTER
+url			: /register
+method		: POST
+parameter
+	. username
+	. password
+	. password2
+	. email
+return
+	. status
+failed
+	. status
+	. message
+
+
+LOGOUT
+url			: /logout
+method		: POST
+parameter
+	. key
+return
+	. status
+
+LOGOUT ALL
+url			: /logoutAll
+method		: POST
+parameter
+	. username
+	. password
+	. key
+return
+	. status
+failed
+	. status
+	. message
+
+
+USER / check validity of key
+url			: /user
+method		: "POST"
+parameter
+	.key
+return
+	. status
+	. data (user data)
+failed
+	. status

@@ -1,0 +1,213 @@
+$baseUrl: "../../";
+$fontColor: #444;
+$linkColor: #75D1FF;
+
+@mixin easing() {
+    -webkit-transition:0.5s ease;
+    -moz-transition:0.5s ease;
+    -o-transition:0.5s ease;
+    -ms-transition:0.5s ease;
+    transition:0.5s ease;
+}
+@mixin clearfix {
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+@font-face {
+    font-family: "Comic Neue";
+    src: url($baseUrl + "fonts/ComicNeue-Angular-Regular.woff");
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    background-color: #efefef;
+}
+.container {
+    max-width: 400px;
+    margin: 0px auto;
+    overflow: auto;
+    padding: 0px 20px 30px 20px;
+    background-color: white;
+    box-shadow: 1px 1px 3px -2px #444;
+    border-radius: 3px;
+    .page {
+        display: none;
+        font-family: "Comic Neue", Arial, serif;
+        h3 {
+            margin: 10px 0px;
+            padding: 5px 0px;
+            text-align: center;
+            border-bottom: solid 1px #666;
+        }
+        form {
+            background: none;
+            margin: 0px auto 0;
+            width: 100%;
+
+            input {
+                font-family: "Comic Neue", Arial, serif;
+                display: block;
+                font-size: 14px;
+                width: 90%;
+                margin: 10px 2%;
+                padding: 10px 3%;
+                border-radius: 3px;
+                box-shadow: inset 0 1px 2px rgba(0,0,0, .55), 0px 1px 1px rgba(255,255,255,.5);
+                border: 1px solid #666;
+                opacity: 0.5;
+                &:hover, &:focus {
+                    opacity: .7;
+                    color:#08c;
+                    border: 1px solid #08c;
+                    box-shadow: 0px 1px 0px rgba(255,255,255,.25),inset 0px 3px 6px rgba(0,0,0,.25);
+                }
+                &:focus {
+                    box-shadow: inset 0 1px 2px rgba(255,255,255, .35), 0px 1px 15px rgba(0,246,255,.5);
+                    border: 1px solid #08c;
+                    outline: none;
+                }
+            }
+        }
+        .flex {
+            display: flex;
+        }
+        .buttons {
+            margin: 10px auto;
+            display: table;
+            @include clearfix;
+            &.kanan {
+                margin: 10px 0px 10px auto;
+            }
+            &.kiri {
+                margin: 10px auto 10px 0px;
+            }
+        }
+        .button {
+            width: initial;
+            opacity: .99;
+            background: #08c;
+            box-shadow: inset 0 1px 2px rgba(255,255,255, .35), 0px 1px 6px rgba(0,246,255,.5);
+            border: 1px solid #0a5378;
+            border-radius: 4px;
+            color: #eee;
+            cursor: pointer;
+            text-shadow:0px -1px 0px rgba(0,0,0,.5);
+            &.single {
+                padding: 10px 15px;
+                text-align: center;
+                float: left;
+                margin: 0px 5px;
+            }
+            &:hover {
+                color: #eee;
+                background: #08c;
+                border: 1px solid #0a5378;
+                border-radius: 3px;
+                box-shadow: inset 0px 3px 16px rgba(0,0,0,.25),0px 1px 10px rgba(255,255,255,.5),inset 0px -1px 2px rgba(255,255,255,.35);
+                text-shadow:0px 1px 1px rgba(0,0,0,.65);
+                -webkit-transition: all 0.40s ease-out;
+                transition: all 0.40s ease-out;
+            }
+            &:focus {
+                color: #eee;
+            }
+        }
+        .daftar_barang {
+            @include clearfix;
+            .barang {
+                width: 94%;
+                display: flex;
+                padding: 5px 3%;
+                border-bottom: solid 1px #444;
+                .nama {
+                    width: 100%;
+                    padding: 0px 5px 0px 0px;
+                    margin: 0px 2.5px 0px 0px;
+                }
+                .jumlah {
+                    min-width: 25px;
+                    padding: 0px 5px;
+                    margin: 0px 2.5px;
+                }
+                .harga {
+                    min-width: 130px;
+                    padding: 0px 0px 0px 5px;
+                    margin: 0px 0px 0px 2.5px;
+                    text-align: right;
+                    position: relative;
+                    &:before {
+                        content: "Rp ";
+                        display: inline;
+                        left: 0;
+                        position: absolute;
+                    }
+                    &:after {
+                        content: " ,-";
+                    }
+                }
+                &.banyak {
+                    display: block;
+                    .barang {
+                        border-bottom: 0px;
+                        width: 100%;
+                        padding: 0px;
+                        .masing {
+                            font-style: italic;
+                            font-size: small;
+                            letter-spacing: 0.1em;
+                        }
+                    }
+                }
+            }
+            .total {
+                border-bottom: 0px;
+                border-top: solid 2px #444;
+                .nama {
+                    font-style: italic;
+                }
+            }
+        }
+        .daftar_belanja {
+            padding: 0px 5px;
+            .belanja {
+                width: 100%;
+                display: flex;
+                margin: 5px 0px;
+                background-color: #efefef;
+                border-radius: 3px;
+                box-shadow: 1px 1px 3px -1px #666;
+                .content {
+                    width: 100%;
+                    padding: 10px
+                }
+                .tanggal {
+                    padding: 10px;
+                    min-width: 92px;     
+                }
+                .buttons {
+                    padding: 10px;
+                    min-width: 27px;
+                    .button {
+                        width: 25px;
+                        text-align: center;
+                    }
+                }
+            }
+        }
+        .total_belanja {
+            margin: 10px 5px;
+            padding: 7px 10px;
+            background-color: rgb(3, 137, 204);
+            text-align: right;
+            color: white;
+            font-weight: bold;
+            font-size: x-large;
+            border-radius: 2px;
+        }
+    }
+}
