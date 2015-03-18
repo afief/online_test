@@ -43,7 +43,10 @@ $app->post("/soals/:id", function($id) {
 				if (setBundle($kode, $id, $user["id"], json_encode($ids))) {
 
 					$result->status = true;
-					$result->data = $soals;
+					$result->data = new stdClass();
+					$result->data->soal_count = count($soals);
+					$result->data->soals = $soals;
+					$result->data->bundle = $kode;
 
 				} else {
 					$result->message = "failed to set bundle";
@@ -56,9 +59,83 @@ $app->post("/soals/:id", function($id) {
 	} else {
 		$result->message = "failed credential";
 	}
+	echo json_encode($result);
+});
+
+$app->post("/bundle/:kode", function($kode) {
+	$result = new stdClass();
+	$result->status = false;
+
+	$data = getPosts();
+
+	if (isset($data["key"])) {
+		$user = getUserByKey($data["key"]);
+		if ($user) {
+			$bundle = getBundle($user["id"], $kode);
+			if ($bundle) {
+				$result->status = true;
+				$result->data = $bundle;
+			}
+		} else {
+			$result->message = "failed credential";
+		}
+	} else {
+		$result->message = "failed credential";
+	}
 
 	echo json_encode($result);
+});
 
+$app->post("/jawab", function() {
+	$result = new stdClass();
+	$result->status = false;
+
+	$data = getPosts();
+
+	if (isset($data["key"]) && isset($data["bundle"])) {
+		$user = getUserByKey($data["key"]);
+		if ($user) {
+
+			$jawab = isset($data["jawaban"]) ? $data["jawaban"] : new stdClass();
+
+			$jawabans = getBundleJawaban($user["id"], $data["bundle"]);
+			$soal_ids = getBundleIds($user["id"], $data["bundle"]);
+			if ($jawabans) {
+				$numaff = 0;
+				foreach ($jawab as $key => $value) {
+					if (in_array($key, $soal_ids)) {
+						if (!property_exists($jawabans, $key)) {
+							$numaff++;
+						} else {
+							if ($jawabans->$key != $value)
+								$numaff++;
+						}
+						$jawabans->$key = $value;
+					}
+				}
+
+				if (updateBundleJawaban($user["id"], $data["bundle"], $jawabans, (isset($data["finish"]) && $data["finish"] ) )) {
+					$result->status = true;
+					$result->data = new stdClass();
+					$result->data->affected = $numaff;
+				} else if ($numaff == 0) {
+					$result->message = "no row affected";
+				} else {
+					$result->message = "update failed";
+				}
+
+			} else {
+				$result->message = "data not valid";
+			}
+
+		} else {
+			$result->message = "failed credential";
+		}
+	} else {
+		$result->message = "failed credential";
+	}
+
+	echo json_encode($result);
 });
 
 function setBundle($kode, $idPelajaran, $idUser, $soal_ids) {
@@ -77,6 +154,80 @@ function setBundle($kode, $idPelajaran, $idUser, $soal_ids) {
 
 	return false;
 }
+
+function getBundle($iduser, $kode) {
+	global $db;
+
+	$bundle = $db->get("so_bundle", "*", ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+	if ($bundle) {
+		//ambil pelajaran
+		$pelajaran = $db->get("so_pelajaran", ["judul", "meta"], ["id" => $bundle["idpelajaran"]]);
+		if ($pelajaran) {
+			$pelajaran["meta"] = json_decode($pelajaran["meta"]);
+			$bundle["pelajaran"] = $pelajaran;
+		} else {
+			return false;
+		}
+
+		//ambil soal
+		$soal_ids = json_decode($bundle["soal_ids"]);
+		$soals = $db->select("so_soal", ["id", "soal", "pilihan", "meta"], ["id" => $soal_ids]);
+		if ($soals) {
+			for ($i = 0; $i < count($soals); $i++) {
+				$soals[$i]["meta"]		= json_decode($soals[$i]["meta"]);
+				$soals[$i]["pilihan"]	= json_decode($soals[$i]["pilihan"]);
+			}
+			$bundle["soals"] = $soals;
+			$bundle["soal_count"] = count($soals);
+		} else {
+			$bundle["soal_count"] = 0;
+		}
+
+		unset($bundle["id"]);
+		unset($bundle["soal_ids"]);
+		unset($bundle["iduser"]);
+		unset($bundle["idpelajaran"]);
+
+		return $bundle;
+	}
+	return false;
+}
+
+function getBundleJawaban($iduser, $kode) {
+	global $db;
+
+	$jawaban = $db->get("so_bundle", "jawabans", ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+	if ($jawaban) {
+		$jawaban = json_decode($jawaban);
+		return $jawaban;
+	}
+	return false;
+}
+function getBundleIds($iduser, $kode) {
+	global $db;
+
+	$ids = $db->get("so_bundle", "soal_ids", ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+	if ($ids) {
+		$ids = json_decode($ids);
+		return $ids;
+	}
+	return false;
+}
+
+function updateBundleJawaban($iduser, $kode, $jawaban, $isFinish = false) {
+	global $db;
+
+	$update = false;
+	if ($isFinish)
+		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban), "isfinish" => 1], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+	else
+		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban)], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+
+	if ($update)
+		return true;
+	return false;
+}
+
 
 function getPelajarans() {
 	global $db;
@@ -99,6 +250,7 @@ function getPelajarans() {
 	return false;
 }
 
+// parameter id adalah id pelajaran
 function getSoals($id) {
 	global $db;
 
