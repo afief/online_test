@@ -1,98 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="tryout">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Belanja</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
-
-	<link rel="stylesheet" href="style/fa/css/font-awesome.min.css">
+	<title>Tryout</title>
 	<link rel="stylesheet" href="style/style.php/style.scss">
-	
-	<script src="js/jquery-1.11.2.min.js" type="text/javascript" charset="utf-8" async defer></script>
 
-	<script src="js/consoler.js" type="text/javascript" charset="utf-8" async defer></script>
-	<script src="js/ObjectEvents.js" type="text/javascript" charset="utf-8" async defer></script>
-	<script src="js/database.js" type="text/javascript" charset="utf-8" async defer></script>
-
-	<script src="js/pages/page_login.js" type="text/javascript" charset="utf-8" async defer></script>
-	<script src="js/pages/page_daftar.js" type="text/javascript" charset="utf-8" async defer></script>
-	<script src="js/pages/page_daftartambah.js" type="text/javascript" charset="utf-8" async defer></script>
-	<script src="js/pages/page_add.js" type="text/javascript" charset="utf-8" async defer></script>
-
+	<script src="js/angular.js" type="text/javascript" charset="utf-8" async defer></script>
+	<script src="js/angular-route.min.js" type="text/javascript" charset="utf-8" async defer></script>
 	<script src="js/index.js" type="text/javascript" charset="utf-8" async defer></script>
 </head>
 <body>
 
-	<div class="container">
-		<div class="page" id="page_login">
-			<form action="#" id="form_login" method="POST">
-				<input type="text" class="fullwidth" name="username" placeholder="username">
-				<input type="password" class="fullwidth" name="password" placeholder="password">
-
-				<div class="buttons kanan">
-					<!-- <button type="button" class="button single"><i class="fa fa-user-plus"></i></button> -->
-					<button type="submit" class="button single"><i class="fa fa-sign-in"></i></button>
-				</div>
-			</form>
-		</div>
-
-		<div class="page" id="page_daftar">
-			<div class="buttons kiri">
-				<div class="button single btlogout">
-					<i class="fa fa-sign-out"></i>
-				</div>
-			</div>
-
-			<h3>Dartar Tempat Belanja</h3>
-			<div class="total_belanja"></div>
-			<div class="daftar_belanja" id="daftar_belanja">
-			</div>
-
-			<div class="buttons">
-				<div class="button single" id="btTambahDaftar">
-					<i class="fa fa-plus"></i>
-				</div>
-			</div>
-		</div>
-
-		<div class="page" id="page_daftartambah">
-			<h3>Tambah Daftar Belanja</h3>
-
-			<form action="#" id="form_daftartambah" method="POST">
-				<input type="text" class="fullwidth" name="daftar_tempat" placeholder="Tempat">
-				<input type="datetime-local" class="fullwidth" name="daftar_tanggal" placeholder="Tanggal">
-				<input type="text" class="fullwidth" name="daftar_keterangan" placeholder="Keterangan">
-
-				<div class="buttons kanan">
-					<button class="button single" type="submit">
-						<i class="fa fa-plus"></i>
-					</button>
-				</div>
-			</form>
-		</div>
-
-		<div class="page" id="page_add">
-			<form action="#" id="form_add" method="POST">
-				<input type="text" class="fullwidth" name="nama_barang" placeholder="Nama Barang">
-				<input type="number" class="fullwidth" name="harga_barang" placeholder="Harga Barang">
-				<input type="number" class="fullwidth" name="jumlah_barang" value="1" placeholder="Jumlah">
-
-				<div class="buttons kanan">
-					<button class="button single" type="submit">
-						<i class="fa fa-plus"></i>
-					</button>
-				</div>
-			</form>
-
-			<div class="daftar_barang" id="daftar_add">
-				<div class="barang total">
-					<div class="nama">Total</div>
-					<div class="harga" id="total_add"></div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<div class="container" ng-view></div>
 	
 </body>
 </html>
