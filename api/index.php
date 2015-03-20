@@ -9,6 +9,9 @@ $app = new \Slim\Slim();
 $app->get("/", function() {
 	echo "selamat datang";
 });
+$app->get("/docs", function() {
+	echo "dokumentasi";
+});
 $app->post("/login", function() {
 	global $app;
 
