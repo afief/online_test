@@ -1,10 +1,11 @@
-/* compiled by scssphp v0.0.9 on Thu, 19 Mar 2015 11:10:05 +0100 (0.0144s) */
+/* compiled by scssphp v0.0.9 on Fri, 20 Mar 2015 05:12:00 +0100 (0.0402s) */
 
 @font-face {
   font-family: "Comic Neue";
   src: url("../../fonts/ComicNeue-Angular-Regular.woff"); }
 
 body {
+  font-family: "Comic Neue";
   margin: 0px;
   padding: 0px;
   background-color: #efefef; }
