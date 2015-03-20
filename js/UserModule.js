@@ -1,9 +1,10 @@
 var userModule = angular.module("UserModule", []);
 
-userModule.factory("user", ["$http", function($http) {
-	console.log("user init");
+userModule.factory("user", ["$http","$q", function($http, $q) {
+
 	var key = window.localStorage.getItem("key") || "";
-	var isLoggedIn = false;
+	var isLogin = false;
+
 	function changeKey(newKey) {
 		key = newKey;
 		window.localStorage.setItem("key", key);
@@ -11,57 +12,59 @@ userModule.factory("user", ["$http", function($http) {
 	}
 
 	return {
-		key: key,
-		isLoggedIn: isLoggedIn,
-		login: function(credential, callback) {
+		getKey: function() {
+			return key;
+		},
+		isLogin: function() {
+			return isLogin;
+		},
+		login: function(credential) {
 
-			$http.post("api/login", $.param(credential)).
+			var promise = $http.post("api/login", $.param(credential)).
 			success(function(data) {
 				if (data.status) {
 					changeKey(data.key);
-					isLoggedIn = true;
-					callback(true);
-				} else {
-					callback(false);
+					isLogin = true;					
 				}
+				return data;
 			}).
-			error(function(data) {
-				callback(false);
+			catch(function(err) {
+				return err;
 			});
+
+			return promise;
 
 		},
-		cek: function(callback) {
+		cek: function() {
+			if (key == "")
+				return $q.when({data: {status: false}});
 
-			if (key == "") {
-				callback(false);
-				return;
-			}
-			$http.post("api/user", $.param({key: key})).
-			success(function(data) {
-				console.log(data);
+			var promise =  $http.post("api/user", $.param({key: key})).
+			success(function(data, status) {
 				if (data.status) {
-					callback(true);
-					isLoggedIn = true;
-				} else {
-					callback(false);
+					isLogin = true;
 				}
+				return data;
 			}).
-			error(function(data) {
-				callback(false);
+			catch(function(err) {
+				return err;
 			});
 
+			return promise;
 		},
 		changeKey: changeKey,
-		logout: function(callback) {
+		logout: function() {
 			$http.post("api/logout", $.param({key: key})).
 			success(function(data) {
 				if (data.status) {
-					callback(true);
-					isLoggedIn = false;
+					isLogin = false;
 				}
+				changeKey("");
+				return data;
 			}).
-			error(function(data) {
-				callback(false);
+			catch(function(err) {
+				changeKey("");
+				return err;
 			});
 		}
 	}

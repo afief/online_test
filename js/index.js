@@ -1,3 +1,5 @@
+var lg = console.log.bind(console);
+
 (function() {
 	var toApp = angular.module("tryout", ["ngRoute", "UserModule"], ["$httpProvider", function($httpProvider) {
 		$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -5,17 +7,16 @@
 
 	toApp.config(['$routeProvider',
 		function($routeProvider) {
-			var resolver = {
-				check: 	function() {
-					return false;
-				}
-			}
-
 			$routeProvider.
 			when('/', {
 				templateUrl: 'pages/home.html',
 				controller: 'ctrlHome',
-				resolve: resolver
+				resolve: {
+					check: function(user) {
+						var _cekuser = user.cek();
+						return _cekuser;
+					}
+				}
 			}).
 			when('/login', {
 				templateUrl: 'pages/login.html',
@@ -30,31 +31,45 @@
 			});
 		}
 		]);
-
-	toApp.run(["user", "$location", function(user, $location) {
-		console.log($location.$$path);
-		user.cek(function(res) {
-			if (!res)
-				failed();
-			else
-				success();
+	toApp.run(['$rootScope', 'user', function($root, user) {
+		$root.$on('$routeChangeStart', function(e, curr, prev) { 
+			lg(user.isLogin());
 		});
-		function success() {
-			if ($location.$$path == "/login")
-				$location.path("/");
-		}
-		function failed() {
-			$location.path("/login");
-		}
+		$root.$on('$routeChangeSuccess', function(e, curr, prev) { 
+			e.preventDefault();
+			//prev.$$route.originalPath
+		});
 	}]);
 
+	/* Detect when the route has changed */
+	// toApp.run(["$rootScope", "$location", "user", function ($rootScope, $location, user) {
+	// 	$rootScope.$on("$routeChangeStart", function (event) {
+	
+	// 		user.cek(function(res) {
+	// 			if (!res) failed();
+	// 			else success();
+	// 		});
+	// 		function success() {
+	// 			if ($location.$$path == "/login") {
+	// 				$location.path("/");
+	// 			}
+	// 		}
+	// 		function failed() {
+	// 			$location.path("/login");
+	// 		}
+	// 	});
+	// }]);
+
 	/* Home Controller */
-	toApp.controller("ctrlHome", ["$scope", function($scope) {
-		
+	toApp.controller("ctrlHome", ["$scope", "check", function($scope, check) {
+		lg("PAGE HOME");		
+		lg(check);
 	}]);
 
 	/* Login Controller */
 	toApp.controller("ctrlLogin", ["$scope", "$location", "user", function($scope, $location, user) {
+
+		lg("PAGE LOGIN");
 		
 		$scope.data = {
 			username: "",
