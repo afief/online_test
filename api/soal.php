@@ -1,6 +1,5 @@
 <?php
 
-
 $app->post("/pelajaran", function() {
 
 	$result = new stdClass();

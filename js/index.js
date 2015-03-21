@@ -10,12 +10,12 @@ var lg = console.log.bind(console);
 			$routeProvider.
 			when('/', {
 				templateUrl: 'pages/home.html',
-				controller: 'ctrlHome',
+				controller: 'HomeController',
 				authenticate: true
 			}).
 			when('/login', {
 				templateUrl: 'pages/login.html',
-				controller: 'ctrlLogin',
+				controller: 'LoginController',
 				authenticate: false,
 				resolve: {
 					authenticated: function(user) {
@@ -25,7 +25,7 @@ var lg = console.log.bind(console);
 			}).
 			when('/logout', {
 				templateUrl: 'pages/logout.html',
-				controller: 'ctrlLogout',
+				controller: 'LogoutController',
 				authenticate: true
 			}).
 			otherwise({

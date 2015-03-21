@@ -1,6 +1,9 @@
 $baseUrl: "../../";
-$fontColor: #444;
-$linkColor: #75D1FF;
+
+$blue: #348DF2;
+$red : rgb(154, 23, 23);
+$reddark : rgb(154, 23, 23);
+$grey : #333333;
 
 @mixin easing() {
     -webkit-transition:0.5s ease;
@@ -27,4 +30,60 @@ body {
     margin: 0px;
     padding: 0px;
     background-color: #efefef;
+}
+
+header {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    padding: 0px;
+    background-color: $grey;
+    color: white;
+    z-index: 100;
+    .iconpage {
+        padding: 12px 18px 10px 15px;
+        float: left;
+        display: inline;
+    }
+    .back {
+        background-color: rgb(84, 25, 25);
+    }
+    .iconuser {
+        display: inline;
+        float: right;
+        padding: 12px 18px 10px 15px;
+    }
+    h1 {
+        float: left;
+        margin: 0px;
+        padding: 12px 0px 10px 0px;
+        font-size: medium;
+        font-weight: normal;
+        text-align: center;
+        display: inline;
+    }
+}
+
+.container {
+    margin-top: 41px;
+    .page {
+        padding: 10px;
+        position: relative;
+        .button {
+            background-color: $blue;
+            border: 0px;
+            color: white;
+            outline: none;
+            span {
+                display: inline-block;
+            }
+            .icon {
+                padding: 10px;
+            }
+            .text {
+                padding: 10px;
+            }
+        }
+    }
 }
