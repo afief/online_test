@@ -36,6 +36,8 @@ userModule.factory("user", ["$http","$q", function($http, $q) {
 
 		},
 		cek: function() {
+			console.log("key", key);
+			
 			if (key == "")
 				return $q.when({data: {status: false}});
 

@@ -1,7 +1,7 @@
 var lg = console.log.bind(console);
 
 (function() {
-	var toApp = angular.module("tryout", ["ngRoute", "UserModule"], ["$httpProvider", function($httpProvider) {
+	var toApp = angular.module("tryout", ["ngRoute", "UserModule", "PageControllers"], ["$httpProvider", function($httpProvider) {
 		$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 	}]);
 
@@ -11,93 +11,45 @@ var lg = console.log.bind(console);
 			when('/', {
 				templateUrl: 'pages/home.html',
 				controller: 'ctrlHome',
-				resolve: {
-					check: function(user) {
-						var _cekuser = user.cek();
-						return _cekuser;
-					}
-				}
+				authenticate: true
 			}).
 			when('/login', {
 				templateUrl: 'pages/login.html',
-				controller: 'ctrlLogin'
+				controller: 'ctrlLogin',
+				authenticate: false,
+				resolve: {
+					authenticated: function(user) {
+						return user.cek();
+					}
+				}
 			}).
 			when('/logout', {
 				templateUrl: 'pages/logout.html',
-				controller: 'ctrlLogout'
+				controller: 'ctrlLogout',
+				authenticate: true
 			}).
 			otherwise({
 				redirectTo: '/'
 			});
 		}
 		]);
-	toApp.run(['$rootScope', 'user', function($root, user) {
-		$root.$on('$routeChangeStart', function(e, curr, prev) { 
-			lg(user.isLogin());
+
+	toApp.run(['$rootScope', '$location', 'user', function($root, $location, user) {
+		$root.$on('$routeChangeStart', function(e, curr, prev) {
+
 		});
 		$root.$on('$routeChangeSuccess', function(e, curr, prev) { 
-			e.preventDefault();
-			//prev.$$route.originalPath
+			var authenticate = curr.$$route.authenticate || false;
+			if (authenticate && !user.isLogin()) {
+				e.preventDefault();
+				$location.path("/login");
+			} else if ((curr.$$route.originalPath == "/login") && user.isLogin()) {
+				if (prev && prev.$$route && (prev.$$route.originalPath != curr.$$route.originalPath))
+					$location.path(prev.$$route.originalPath);
+				else
+					$location.path("/");
+			}
 		});
 	}]);
-
-	/* Detect when the route has changed */
-	// toApp.run(["$rootScope", "$location", "user", function ($rootScope, $location, user) {
-	// 	$rootScope.$on("$routeChangeStart", function (event) {
-	
-	// 		user.cek(function(res) {
-	// 			if (!res) failed();
-	// 			else success();
-	// 		});
-	// 		function success() {
-	// 			if ($location.$$path == "/login") {
-	// 				$location.path("/");
-	// 			}
-	// 		}
-	// 		function failed() {
-	// 			$location.path("/login");
-	// 		}
-	// 	});
-	// }]);
-
-	/* Home Controller */
-	toApp.controller("ctrlHome", ["$scope", "check", function($scope, check) {
-		lg("PAGE HOME");		
-		lg(check);
-	}]);
-
-	/* Login Controller */
-	toApp.controller("ctrlLogin", ["$scope", "$location", "user", function($scope, $location, user) {
-
-		lg("PAGE LOGIN");
-		
-		$scope.data = {
-			username: "",
-			password: ""
-		}
-		$scope.submit = function() {
-			user.login($scope.data, function(res) {
-				if (res)
-					$location.path("/");
-				else
-					alert("Login Gagal");
-			});
-		};
-
-	}]);
-
-	/* Home Controller */
-	toApp.controller("ctrlLogout", ["$scope", "user", "$location", function($scope, user, $location) {
-		$scope.logout = function() {
-			user.logout(function(res) {
-				if (res)
-					$location.path("/");
-				else
-					alert("Logout Gagal");
-			});
-		}
-	}]);
-
-
 
 })();
