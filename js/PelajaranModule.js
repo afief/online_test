@@ -9,8 +9,23 @@ pelMod.config(['$routeProvider', function($routeProvider) {
 	});
 }]);
 
-pelMod.factory("soalDB", ["$http", "$q", function($http, $q) {
+pelMod.factory("soalDB", ["$http", "$q", "user", function($http, $q, user) {
+	return {
+		getPelajaran: function() {
+			var promise = $http.post("api/pelajaran", $.param({key: user.getKey()})).
+			success(function(data) {
+				if (data.status) {
+					
+				}
+				return data;
+			}).
+			catch(function(err) {
+				return err;
+			});
 
+			return promise;
+		}
+	}
 }]);
 
 pelMod.controller("DaftarController", ["$scope", "user", function($scope, user) {

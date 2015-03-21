@@ -59,11 +59,13 @@ pageModule.controller("LoginController", ["$scope", "$location", "user", functio
 		password: ""
 	}
 	$scope.submit = function() {
-		user.login($scope.data, function(res) {
-			if (res)
+		user.login($scope.data).then(function(res) {
+			if (res.data.status)
 				$location.path("/");
 			else
-				alert("Login Gagal");
+				alert("Username / Password Salah");
+		}, function() {
+			alert("Login Failed");
 		});
 	};
 
@@ -74,11 +76,10 @@ pageModule.controller("LogoutController", ["$scope", "user", "$location", functi
 	lg("PAGE LOGOUT");
 
 	$scope.logout = function() {
-		user.logout(function(res) {
-			if (res)
-				$location.path("/");
-			else
-				alert("Logout Gagal");
+		user.logout().then(function() {
+			$location.path("/");
+		}, function() {
+			alert("Logout Failed");
 		});
 	}
 }]);

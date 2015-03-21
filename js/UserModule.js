@@ -56,7 +56,8 @@ userModule.factory("user", ["$http","$q", function($http, $q) {
 		},
 		changeKey: changeKey,
 		logout: function() {
-			$http.post("api/logout", $.param({key: key})).
+
+			var promise = $http.post("api/logout", $.param({key: key})).
 			success(function(data) {
 				if (data.status) {
 					isLogin = false;
@@ -68,6 +69,8 @@ userModule.factory("user", ["$http","$q", function($http, $q) {
 				changeKey("");
 				return err;
 			});
+
+			return promise;
 		}
 	}
 
