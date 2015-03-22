@@ -1,0 +1,31 @@
+<div class="page">
+	<div class="content withfooter">
+		<div class="soal">
+			<div class="no">{{index + 1}}</div>
+			<div class="text" ng-bind-html="soals[index].soal"></div>
+		</div>
+		<div class="pilihan">
+			<ul>
+				<li ng-repeat="pil in soals[index].pilihan" ng-click="pilih(index, $index)" ng-class="{selected: terpilih(index, $index)}">
+					<span class="alpha">{{ getAlpha($index) }}</span>
+					<span class="text" ng-bind-html="pil"></span>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="footer">
+		<div class="jejak">
+			<span ng-repeat="jek in soals" ng-class="{done: terjawab($index), active: ($index == index) }" style="width: {{ 100 / soals.length }}%" ng-click="lompaKe($index)"></span>
+		</div>
+		<div class="buttons kanan">
+			<button class="button" ng-click="prev()">
+				<span class="icon fa fa-chevron-left"></span>
+				<span class="text">Prev</span>
+			</button>
+			<button class="button" ng-click="next()">
+				<span class="text">Next</span>
+				<span class="icon fa fa-chevron-right"></span>
+			</button>
+		</div>
+	</div>
+</div>

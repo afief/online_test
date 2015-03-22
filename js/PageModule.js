@@ -13,9 +13,9 @@ pageModule.config(['$routeProvider',
 			controller: 'LoginController',
 			authenticate: false,
 			resolve: {
-				authenticated: function(user) {
+				authenticated: ["user", function(user) {
 					return user.cek();
-				}
+				}]
 			}
 		}).
 		when('/logout', {
@@ -37,6 +37,7 @@ pageModule.directive('header', function () {
         templateUrl: "pages/header.html",
         controller: ['$scope', 'user', function ($scope, user) {
         	$scope.title = "Header";
+        	console.log("header");
             // $scope.$watch(function() { return hdi.nilai; }, function(newVal, oldVal) {
             // 	$scope.title = newVal;
             // });
@@ -45,8 +46,12 @@ pageModule.directive('header', function () {
 });
 
 /* Home Controller */
-pageModule.controller("HomeController", ["$scope", function($scope) {
+pageModule.controller("HomeController", ["$scope", "$location", function($scope, $location) {
 	lg("PAGE HOME");
+
+	$scope.keSoal = function() {
+		$location.path("/pelajaran");
+	}
 }]);
 
 /* Login Controller */

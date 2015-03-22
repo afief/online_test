@@ -1,9 +1,13 @@
 $baseUrl: "../../";
 
-$blue: #348DF2;
+$blue: #1A66BB;
+$lightBlue: #AAC6E5;
+$darkBlue: #284D76;
 $red : rgb(154, 23, 23);
 $reddark : rgb(154, 23, 23);
 $grey : #333333;
+$yellow: rgb(219, 219, 64);
+$lightYellow: rgba(219, 219, 64, 0.5);
 
 @mixin easing() {
     -webkit-transition:0.5s ease;
@@ -25,8 +29,15 @@ $grey : #333333;
     src: url($baseUrl + "fonts/ComicNeue-Angular-Regular.woff");
 }
 
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  src: url($baseUrl + "fonts/roboto.woff2") format("woff2");
+}
+
 body {
-    font-family: "Comic Neue";
+    font-family: "Roboto";
     margin: 0px;
     padding: 0px;
     background-color: #efefef;
@@ -42,7 +53,7 @@ header {
     color: white;
     z-index: 100;
     .iconpage {
-        padding: 12px 18px 10px 15px;
+        padding: 15px 18px 14px 15px;
         float: left;
         display: inline;
     }
@@ -52,12 +63,12 @@ header {
     .iconuser {
         display: inline;
         float: right;
-        padding: 12px 18px 10px 15px;
+        padding: 15px 18px 14px 15px;
     }
     h1 {
         float: left;
         margin: 0px;
-        padding: 12px 0px 10px 0px;
+        padding: 15px 0px 14px 0px;
         font-size: medium;
         font-weight: normal;
         text-align: center;
@@ -66,15 +77,53 @@ header {
 }
 
 .container {
-    margin-top: 41px;
+    margin-top: 50px;
     .page {
         padding: 10px;
         position: relative;
+        h2 {
+            text-align: center;
+            margin: 0px 0px 10px 0px;
+            padding: 5px;
+            box-shadow: 0px 4px 6px -6px $grey;
+            color: $grey;
+        }
+        .content {
+            &.withfooter {
+                margin-bottom: 77px;
+            }
+        }
+        .info {
+            display: flex;
+            > span {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+                padding: 10px;
+                font-size: large;
+                color: $grey;
+                > span {
+                    font-size: small;
+                }
+            }
+        }
+        .keterangan {
+            color: #333;
+        }
+
+        .buttons {
+            display: table;
+            &.kanan {
+                float: right;
+            }
+        }
         .button {
             background-color: $blue;
             border: 0px;
             color: white;
             outline: none;
+            
             span {
                 display: inline-block;
             }
@@ -83,6 +132,152 @@ header {
             }
             .text {
                 padding: 10px;
+            }
+        }
+        .tengah {
+            margin-left: auto;
+            margin-right: auto;
+            display: table;
+        }   
+
+        .daftar {
+            @include clearfix;
+            ul {
+                padding: 0px;
+                margin: 0px auto;
+                li {
+                    display: block;
+                    margin: 10px auto;
+                    color: white;
+                    &:first-child {
+                        margin-top: 0px;
+                    }
+                    &:last-child {
+                        margin-bottom: 0px;
+                    }
+                    > span {
+                        display: inline-block;
+                        background-color: $blue;
+                    }
+                }
+            }
+            &.pelajaran {
+                ul {
+                    li {
+                        @include clearfix;
+                        display: flex;
+                        > span {
+                            display: flex;
+                            align-items: center;
+                        }
+                        .judul {
+                            flex: 1;
+                            padding: 15px 20px;
+                        }
+                        .jumlah {
+                            padding: 15px 0px;
+                            min-width: 50px;
+                            justify-content: center;
+                            flex-direction: column;
+                            span {
+                                font-size: 0.8em;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .soal {
+            display: flex;
+            color: $grey;
+            .no {
+                min-width: 30px;
+                display: block;
+                height: 15px;
+                text-align: center;
+                border: solid 2px $blue;
+                background-color: white;
+                border-right: 0px;
+                padding: 7.5px 0px;
+                font-weight: bold;
+                font-size: small;
+            }
+            .text {
+                word-wrap: break-word;
+                padding-left: 5px;
+                border-left: solid 2px $blue;
+            }
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            box-shadow: 0px 4px 4px -4px $grey;
+        }
+        .pilihan {
+            margin: 10px 0px;
+            ul {
+                list-style: none;
+                padding: 0px;
+                margin: 0px;
+                li {
+                    color: #333;
+                    display: flex;
+                    margin: 5px 0px;
+                    .alpha {
+                        margin-right: 5px;
+                        background-color: $lightBlue;
+                        width: 45px;
+                        height: 20px;
+                        padding: 10px 0px;
+                        text-align: center;
+                    }
+                    .text {
+                        padding: 10px;
+                        background-color: $lightBlue;
+                        width: 100%;
+                    }
+                    &.selected span {  
+                        &.alpha {
+                            color: white;
+                            background-color: $darkBlue;
+                        }
+                        &.text {
+                            background-color: $yellow;
+                            padding: 8px;
+                            border: solid 2px $darkBlue;
+                        }
+                    }
+                }
+            }
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+            background-color: #1a66bb;
+            .button {
+                background-color: transparent;
+            }
+
+            .jejak {
+                position: absolute;
+                width: 100%;
+                height: 15px;
+                margin-top: -15px;
+                top: 0px;
+                span {
+                    height: 15px;
+                    background-color: white;
+                    float: left;
+                    display: block;
+                    &.active {
+                        background-color: $yellow;
+                    }
+                    &.done {
+                        background-color: $blue;
+                    }
+                }
             }
         }
     }

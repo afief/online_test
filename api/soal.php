@@ -173,6 +173,7 @@ function getBundle($iduser, $kode) {
 		$soals = $db->select("so_soal", ["id", "soal", "pilihan", "meta"], ["id" => $soal_ids]);
 		if ($soals) {
 			for ($i = 0; $i < count($soals); $i++) {
+				$soals[$i]["soal"]		= nl2br($soals[$i]["soal"]);
 				$soals[$i]["meta"]		= json_decode($soals[$i]["meta"]);
 				$soals[$i]["pilihan"]	= json_decode($soals[$i]["pilihan"]);
 			}
@@ -278,6 +279,7 @@ function getSoals($id) {
 		$baris = $db->select("so_soal", ["id", "soal", "pilihan", "meta"], ["id" => $idsQuery]);
 		if ($baris) {
 			for ($i = 0; $i < count($baris); $i++) {
+				$baris[$i]["soal"]		= nl2br($baris[$i]["soal"]);
 				$baris[$i]["meta"]		= json_decode($baris[$i]["meta"]);
 				$baris[$i]["pilihan"]	= json_decode($baris[$i]["pilihan"]);
 			}

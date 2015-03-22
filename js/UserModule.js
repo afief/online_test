@@ -75,3 +75,22 @@ userModule.factory("user", ["$http","$q", function($http, $q) {
 	}
 
 }]);
+
+userModule.factory("connectivity", function() {
+	return {
+		checkStatus: function(hres) {
+			if (hres.status <= 0)
+				return "Koneksi mati. Mohon periksa kembali jaringan anda.";
+			else if (hres <= 199)
+				return "Gagal (" + hres.status + "): " + hres.statusText;
+			else if (hres <= 299)
+				return "Gagal mengambil data melalui akun anda. Cobalah untuk keluar, lalu masuk kembali ke aplikasi";
+			else if (hres <= 399)
+				return "Terjadi kesalahan koneksi. Koneksi dialihkan";
+			else if (hres <= 499)
+				return "Terjadi kesalahan ketika mengakses server.";
+			else
+				return "Terjadi kesalahan pada server. Hubungi administrator";
+		}
+	}
+});

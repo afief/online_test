@@ -1,0 +1,13 @@
+<div class="page">
+	<h2>{{detail.judul}}</h2>
+	<div class="info">
+		<span class="jumlah"><span>Jumlah Soal</span>{{detail.jumlah_soal}} butir</span>
+		<span class="durasi"><span>Durasi</span>{{detail.meta.durasi}} menit</span>
+	</div>
+	<div class="keterangan" ng-bind-html="detail.meta.keterangan"></div>
+
+	<button class="button tengah" ng-show="loaded" ng-click="kerjakan()">
+		<span class="icon fa fa-pencil"></span>
+		<span class="text">Kerjakan</span>
+	</button>
+</div>

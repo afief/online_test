@@ -1,7 +1,10 @@
 <div class="page">
-	<div class="daftar">
-		<ul ng-repeat="li in list">
-			<li>{{ li }}</li>
+	<div class="daftar pelajaran">
+		<ul>
+			<li ng-repeat="li in list" ng-click="choose(li)">
+				<span class="judul">{{li.judul}}</span>
+				<span class="jumlah">{{li.jumlah_soal}} <span>soal</span></span>
+			</li>
 		</ul>
 	</div>
 </div>
