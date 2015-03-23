@@ -17,6 +17,9 @@
 		<div class="jejak">
 			<span ng-repeat="jek in soals" ng-class="{done: terjawab($index), active: ($index == index) }" style="width: {{ 100 / soals.length }}%" ng-click="lompaKe($index)"></span>
 		</div>
+		<div class="timer">
+			{{ jam }}:{{ menit }}:{{ detik }}
+		</div>
 		<div class="buttons kanan">
 			<button class="button" ng-click="prev()">
 				<span class="icon fa fa-chevron-left"></span>

@@ -29,15 +29,34 @@ pageModule.config(['$routeProvider',
 	}
 	]);
 
-
+pageModule.factory('headerSrv', function() {
+	return {
+		showUpload: false,
+		isLogin: false,
+		whenLoginShow: false,
+		reset: function() {
+			this.showUpload = false;
+			this.shownLoginShow = false;
+		},
+		iconUserClick: function() {
+			this.whenLoginShow = !this.whenLoginShow;
+		},
+		iconProfileClick: function() {
+			lg("User Profile");
+		}
+	}
+});
 pageModule.directive('header', function () {
 	return {
         restrict: 'A', //This menas that it will be used as an attribute and NOT as an element. I don't like creating custom HTML elements
         replace: true,
         templateUrl: "pages/header.html",
-        controller: ['$scope', 'user', function ($scope, user) {
+        controller: ['$scope', 'user', '$route', 'headerSrv', function ($scope, user, $route, headerSrv) {
         	$scope.title = "Header";
-        	console.log("header");
+        	$scope.srv = headerSrv;
+        	$scope.clickUpload = function() {
+        		$scope.$broadcast("uploadJawaban");
+        	}
             // $scope.$watch(function() { return hdi.nilai; }, function(newVal, oldVal) {
             // 	$scope.title = newVal;
             // });

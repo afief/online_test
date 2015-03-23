@@ -5,8 +5,23 @@
 
 	<h1>{{ title }}</h1>
 
-	<div class="iconuser semibutton">
+	<div class="iconuser semibutton iconupload" ng-click="clickUpload()" ng-show="srv.showUpload">
+		<li class="fa fa-upload"></li>
+	</div>
+	<div class="iconuser semibutton" ng-show="srv.isLogin" ng-click="srv.iconUserClick()">
 		<li class="fa fa-user"></li>
+		<div class="usermenu" ng-show="srv.whenLoginShow">
+			<ul>
+				<li ng-click="srv.iconProfileClick()">
+					<span class="icon fa fa-user"></span>
+					<span class="text">User Profile</span>
+				</li>
+				<li>
+					<span class="icon fa fa-sign-out"></span>
+					<span class="text">Logout</span>
+				</li>
+			</ul>
+		</div>
 	</div>
 
 </header>

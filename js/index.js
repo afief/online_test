@@ -5,7 +5,7 @@ var lg = console.log.bind(console);
 		$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 	}]);
 
-	toApp.run(['$rootScope', '$location', 'user', '$route', function($root, $location, user, $route) {
+	toApp.run(['$rootScope', '$location', 'user', '$route', 'headerSrv', function($root, $location, user, $route, headerSrv) {
 		$root.$on('$routeChangeStart', function(e, curr, prev) {
 			var authenticate = curr.$$route.authenticate || false;
 
@@ -31,9 +31,11 @@ var lg = console.log.bind(console);
 				else
 					$location.path("/");
 			}
+
+			headerSrv.reset();
 		});
 		$root.$on('$routeChangeSuccess', function(e, curr, prev) { 
-			
+			headerSrv.isLogin = user.isLogin();
 		});
 	}]);
 

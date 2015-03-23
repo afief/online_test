@@ -93,12 +93,12 @@ $app->post("/jawab", function() {
 
 	if (isset($data["key"]) && isset($data["bundle"])) {
 		$user = getUserByKey($data["key"]);
-		if ($user) {
-
+		if ($user) {			
 			$jawab = isset($data["jawaban"]) ? $data["jawaban"] : new stdClass();
 
 			$jawabans = getBundleJawaban($user["id"], $data["bundle"]);
 			$soal_ids = getBundleIds($user["id"], $data["bundle"]);
+
 			if ($jawabans) {
 				$numaff = 0;
 				foreach ($jawab as $key => $value) {
@@ -118,7 +118,9 @@ $app->post("/jawab", function() {
 					$result->data = new stdClass();
 					$result->data->affected = $numaff;
 				} else if ($numaff == 0) {
-					$result->message = "no row affected";
+					$result->status = true;
+					$result->data = new stdClass();
+					$result->data->affected = 0;
 				} else {
 					$result->message = "update failed";
 				}
@@ -144,7 +146,8 @@ function setBundle($kode, $idPelajaran, $idUser, $soal_ids) {
 		"kode" => $kode,
 		"idpelajaran" => $idPelajaran,
 		"iduser" => $idUser,
-		"soal_ids" => $soal_ids
+		"soal_ids" => $soal_ids,
+		"jawabans" => "{}"
 		]);
 
 	if ($insertId) {
@@ -173,7 +176,7 @@ function getBundle($iduser, $kode) {
 		$soals = $db->select("so_soal", ["id", "soal", "pilihan", "meta"], ["id" => $soal_ids]);
 		if ($soals) {
 			for ($i = 0; $i < count($soals); $i++) {
-				$soals[$i]["soal"]		= nl2br($soals[$i]["soal"]);
+				//$soals[$i]["soal"]		= nl2br($soals[$i]["soal"]);
 				$soals[$i]["meta"]		= json_decode($soals[$i]["meta"]);
 				$soals[$i]["pilihan"]	= json_decode($soals[$i]["pilihan"]);
 			}
@@ -218,10 +221,20 @@ function updateBundleJawaban($iduser, $kode, $jawaban, $isFinish = false) {
 	global $db;
 
 	$update = false;
-	if ($isFinish)
-		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban), "isfinish" => 1], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
-	else
+	if ($isFinish) {
+		$soal_ids = getBundleIds($iduser, $kode);
+		
+		$nilai = 0;
+		if ($soal_ids) {
+			$kuncijawaban = $db->select("so_soal", ["id", "jawaban"], ["id" => $soal_ids]);
+			for ($i = 0; $i < count($kuncijawaban); $i++) {
+				print_r($jawaban['8']);
+			}
+		}
+		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban), "isfinish" => 1, "nilai" => $nilai], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+	} else {
 		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban)], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+	}
 
 	if ($update)
 		return true;
@@ -279,7 +292,7 @@ function getSoals($id) {
 		$baris = $db->select("so_soal", ["id", "soal", "pilihan", "meta"], ["id" => $idsQuery]);
 		if ($baris) {
 			for ($i = 0; $i < count($baris); $i++) {
-				$baris[$i]["soal"]		= nl2br($baris[$i]["soal"]);
+				//$baris[$i]["soal"]		= nl2br($baris[$i]["soal"]);
 				$baris[$i]["meta"]		= json_decode($baris[$i]["meta"]);
 				$baris[$i]["pilihan"]	= json_decode($baris[$i]["pilihan"]);
 			}

@@ -64,6 +64,10 @@ header {
         display: inline;
         float: right;
         padding: 15px 18px 14px 15px;
+        position: relative;
+    }
+    .iconupload {
+        background-color: $blue;
     }
     h1 {
         float: left;
@@ -73,6 +77,25 @@ header {
         font-weight: normal;
         text-align: center;
         display: inline;
+    }
+    .usermenu {
+        position: absolute;
+        width: 180px;
+        right: 0px;
+        background-color: $grey;
+        ul {
+            margin: 0px;
+            padding: 0px;
+            list-style: none;
+            li {
+                @include clearfix;
+                display: flex;
+                padding: 0px 10px;
+                span {
+                    padding: 10px;
+                }
+            }
+        }
     }
 }
 
@@ -260,6 +283,12 @@ header {
                 background-color: transparent;
             }
 
+            .timer {
+                color: white;
+                float: left;
+                padding: 9px;
+            }
+
             .jejak {
                 position: absolute;
                 width: 100%;
@@ -271,6 +300,7 @@ header {
                     background-color: white;
                     float: left;
                     display: block;
+                    outline: solid 1px $blue;
                     &.active {
                         background-color: $yellow;
                     }
