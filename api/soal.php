@@ -222,8 +222,10 @@ function updateBundleJawaban($iduser, $kode, $jawaban, $isFinish = false) {
 	$update = false;
 	if ($isFinish) {
 		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban), "isfinish" => 1], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
-		
-		updateNilai($iduser, $kode);
+		if ($update) {
+			updateNilai($iduser, $kode);
+			return true;
+		}
 	} else {
 		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban)], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
 	}

@@ -33,7 +33,7 @@ $lightYellow: rgba(219, 219, 64, 0.5);
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  src: url($baseUrl + "fonts/roboto.woff2") format("woff2");
+  src: url($baseUrl + "fonts/roboto.ttf");
 }
 
 body {
@@ -301,11 +301,16 @@ header {
                     float: left;
                     display: block;
                     outline: solid 1px $blue;
+                    font-size: small;
+                    color: #999;
+                    text-align: center;
                     &.active {
                         background-color: $yellow;
+                        color: $blue;
                     }
                     &.done {
                         background-color: $blue;
+                        color: white;
                     }
                 }
             }
