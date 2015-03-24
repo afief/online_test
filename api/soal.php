@@ -160,7 +160,7 @@ function setBundle($kode, $idPelajaran, $idUser, $soal_ids) {
 function getBundle($iduser, $kode) {
 	global $db;
 
-	$bundle = $db->get("so_bundle", "*", ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+	$bundle = $db->get("so_bundle", ["kode", "soal_ids", "idpelajaran", "jawabans", "isfinish"], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
 	if ($bundle) {
 		//ambil pelajaran
 		$pelajaran = $db->get("so_pelajaran", ["judul", "meta"], ["id" => $bundle["idpelajaran"]]);
@@ -185,10 +185,9 @@ function getBundle($iduser, $kode) {
 		} else {
 			$bundle["soal_count"] = 0;
 		}
+		$bundle["isfinish"] = ($bundle["isfinish"] == "1");
 
-		unset($bundle["id"]);
 		unset($bundle["soal_ids"]);
-		unset($bundle["iduser"]);
 		unset($bundle["idpelajaran"]);
 
 		return $bundle;
@@ -222,16 +221,9 @@ function updateBundleJawaban($iduser, $kode, $jawaban, $isFinish = false) {
 
 	$update = false;
 	if ($isFinish) {
-		$soal_ids = getBundleIds($iduser, $kode);
+		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban), "isfinish" => 1], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
 		
-		$nilai = 0;
-		if ($soal_ids) {
-			$kuncijawaban = $db->select("so_soal", ["id", "jawaban"], ["id" => $soal_ids]);
-			for ($i = 0; $i < count($kuncijawaban); $i++) {
-				print_r($jawaban['8']);
-			}
-		}
-		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban), "isfinish" => 1, "nilai" => $nilai], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+		updateNilai($iduser, $kode);
 	} else {
 		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban)], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
 	}
@@ -241,6 +233,40 @@ function updateBundleJawaban($iduser, $kode, $jawaban, $isFinish = false) {
 	return false;
 }
 
+function updateNilai($iduser, $kode) {
+	global $db;
+
+	$skor = 0;
+	$nilai = 0;
+
+	$row = $db->get("so_bundle", ["soal_ids", "jawabans"], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+	if ($row) {
+		$row["soal_ids"] = json_decode($row["soal_ids"]);
+		$row["jawabans"] = json_decode($row["jawabans"]);
+		$row["jawabans"] = (array) $row["jawabans"];
+
+		$tjaw = array();
+		foreach ($row["jawabans"] as $key => $value) {
+
+			$tjaw["n" . $key] = $value;
+		}
+
+
+		$kunci = $db->select("so_soal", ["id", "jawaban"], ["id" => $row["soal_ids"]]);
+		if ($kunci) {
+			for ($i = 0; $i < count($kunci); $i++) {
+				if (isset($tjaw[ "n" . $kunci[$i]["id"] ])) {
+					if ($tjaw[ "n" . $kunci[$i]["id"] ] == $kunci[$i]["jawaban"]) {
+						$skor++;
+					}
+				}
+			}
+		}
+		$nilai = $skor / count($row["soal_ids"]) * 100;
+	}
+
+	$update = $db->update("so_bundle", ["skor" => $skor, "nilai" => $nilai], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+}
 
 function getPelajarans() {
 	global $db;
@@ -284,7 +310,7 @@ function getSoals($id) {
 
 			$n = $ids[$rand];
 			// echo $n . "  ";
-			
+
 			array_push($idsQuery, $n);
 			array_splice($ids, $rand, 1);
 		}
