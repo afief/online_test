@@ -213,7 +213,7 @@ pelMod.controller("BundleController", ["$scope", "$location", "soals", "$sce", "
 				popupSrv.show("Hello", "Ini judul Textnya").then(
 					function(id) {
 						if (id == "ok") {
-							soalDB.jawab($scope.bundle, $scope.jawabanSend, false).then(function(res) {
+							soalDB.jawab($scope.bundle, $scope.jawabanSend, true).then(function(res) {
 								lg(res);
 							}, function(err) {
 								lg(err);
