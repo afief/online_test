@@ -106,9 +106,6 @@ $app->post("/logoutAll", function() {
 $app->post("/user", function() {
 	global $app;
 
-	$asd = json_decode("{}");
-	print_r($asd);
-
 	$result = new stdClass();
 	$result->status = false;
 

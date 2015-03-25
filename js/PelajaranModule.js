@@ -66,8 +66,8 @@ pelMod.factory("soalDB", ["$http", "$q", "user", function($http, $q, user) {
 
 			return promise;
 		},
-		jawab: function(bundle, jawaban) {
-			var promise = $http.post("api/jawab", $.param({key: user.getKey(), finish: true, bundle: bundle, jawaban: jawaban})).
+		jawab: function(bundle, jawaban, isfinish) {
+			var promise = $http.post("api/jawab", $.param({key: user.getKey(), finish: isfinish, bundle: bundle, jawaban: jawaban})).
 			success(function(data) {
 				return data;
 			}).
@@ -164,8 +164,8 @@ pelMod.controller("DetailController", ["$scope", "$location", "soalDetail", "soa
 	}
 	]);
 var aaa;
-pelMod.controller("BundleController", ["$scope", "$location", "soals", "$sce", "$interval", "headerSrv", "soalDB",
-	function($scope, $location, soals, $sce, $interval, headerSrv, soalDB){
+pelMod.controller("BundleController", ["$scope", "$location", "soals", "$sce", "$interval", "headerSrv", "soalDB", "popupSrv",
+	function($scope, $location, soals, $sce, $interval, headerSrv, soalDB, popupSrv){
 		var alpha = ["a", "b", "c", "d", "e", "f", "g", "h"];
 		headerSrv.showUpload = true;
 
@@ -210,11 +210,19 @@ pelMod.controller("BundleController", ["$scope", "$location", "soals", "$sce", "
 				window.scrollTo(0,0);
 			}
 			$scope.$on("uploadJawaban", function() {
-				soalDB.jawab($scope.bundle, $scope.jawabanSend).then(function(res) {
-					lg(res);
-				}, function(err) {
-					lg(err);
-				});
+				popupSrv.show("Hello", "Ini judul Textnya").then(
+					function(id) {
+						if (id == "ok") {
+							soalDB.jawab($scope.bundle, $scope.jawabanSend, false).then(function(res) {
+								lg(res);
+							}, function(err) {
+								lg(err);
+							});
+						}
+					}, function() {
+					});
+
+				
 			});
 
 			$scope.terpilih = function(soalke, pilihanke) {

@@ -100,29 +100,44 @@ $app->post("/jawab", function() {
 			$soal_ids = getBundleIds($user["id"], $data["bundle"]);
 
 			if ($jawabans) {
-				$numaff = 0;
-				foreach ($jawab as $key => $value) {
-					if (in_array($key, $soal_ids)) {
-						if (!property_exists($jawabans, $key)) {
-							$numaff++;
-						} else {
-							if ($jawabans->$key != $value)
-								$numaff++;
-						}
-						$jawabans->$key = $value;
-					}
-				}
 
-				if (updateBundleJawaban($user["id"], $data["bundle"], $jawabans, (isset($data["finish"]) && $data["finish"] ) )) {
-					$result->status = true;
-					$result->data = new stdClass();
-					$result->data->affected = $numaff;
-				} else if ($numaff == 0) {
-					$result->status = true;
-					$result->data = new stdClass();
-					$result->data->affected = 0;
+				$isFinish = getBundleFinish($user["id"], $data["bundle"]);
+				if (!$isFinish) {
+
+					$numaff = 0;
+					$affjawab = [];
+					foreach ($jawab as $key => $value) {
+						if (in_array($key, $soal_ids)) {
+							if (!property_exists($jawabans, $key)) {
+								$numaff++;
+							} else {
+								if ($jawabans->$key != $value)
+									$numaff++;
+							}
+							$jawabans->$key = $value;
+							array_push($affjawab, $key);
+						}
+					}
+
+					$dataFinish = $data["finish"] == "true";
+					$resUpdate = updateBundleJawaban($user["id"], $data["bundle"], $jawabans, $dataFinish);
+
+					if ($resUpdate && $dataFinish) {
+						$result->status = true;
+						$result->data = new stdClass();
+						$result->data->affected = $numaff;
+						$result->data->ar_jawab = $affjawab;
+						$result->data->updated = $resUpdate;
+					} else if (($resUpdate && !$dataFinish) || ($numaff == 0)) {
+						$result->status = true;
+						$result->data = new stdClass();
+						$result->data->affected = $numaff;
+						$result->data->ar_jawab = $affjawab;
+					} else {
+						$result->message = "update failed";
+					}
 				} else {
-					$result->message = "update failed";
+					$result->message = "bundle finished";
 				}
 
 			} else {
@@ -215,6 +230,15 @@ function getBundleIds($iduser, $kode) {
 	}
 	return false;
 }
+function getBundleFinish($iduser, $kode) {
+	global $db;
+
+	$isfinish = $db->get("so_bundle", "isfinish", ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+	if ($isfinish == "1") {
+		return true;
+	}
+	return false;
+}
 
 function updateBundleJawaban($iduser, $kode, $jawaban, $isFinish = false) {
 	global $db;
@@ -223,8 +247,7 @@ function updateBundleJawaban($iduser, $kode, $jawaban, $isFinish = false) {
 	if ($isFinish) {
 		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban), "isfinish" => 1], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
 		if ($update) {
-			updateNilai($iduser, $kode);
-			return true;
+			return updateNilai($iduser, $kode);
 		}
 	} else {
 		$update = $db->update("so_bundle", ["jawabans" => json_encode($jawaban)], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
@@ -232,6 +255,7 @@ function updateBundleJawaban($iduser, $kode, $jawaban, $isFinish = false) {
 
 	if ($update)
 		return true;
+
 	return false;
 }
 
@@ -249,7 +273,6 @@ function updateNilai($iduser, $kode) {
 
 		$tjaw = array();
 		foreach ($row["jawabans"] as $key => $value) {
-
 			$tjaw["n" . $key] = $value;
 		}
 
@@ -268,6 +291,8 @@ function updateNilai($iduser, $kode) {
 	}
 
 	$update = $db->update("so_bundle", ["skor" => $skor, "nilai" => $nilai], ["AND" => ["kode" => $kode, "iduser" => $iduser]]);
+
+	return ["finish" => true, "skor" => $skor, "nilai" => $nilai];
 }
 
 function getPelajarans() {

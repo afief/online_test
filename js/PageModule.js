@@ -57,11 +57,43 @@ pageModule.directive('header', function () {
         	$scope.clickUpload = function() {
         		$scope.$broadcast("uploadJawaban");
         	}
-            // $scope.$watch(function() { return hdi.nilai; }, function(newVal, oldVal) {
-            // 	$scope.title = newVal;
-            // });
-}]
-}
+        }]
+    }
+});
+
+pageModule.factory("popupSrv", ["$q", function($q) {
+	var defer;
+	return {
+		isShow: false,
+		header: "",
+		text: "",
+		buttons: [],
+		show: function(header, text, buttons) {
+			this.header = header;
+			this.text = text;
+			this.buttons = buttons || [{id: "ok", text: "OK"}, {id: "cancel", text: "Cancel"}];
+			this.isShow = true;
+
+			defer = $q.defer();
+
+			return defer.promise;
+		},
+		hide: function(index) {
+			this.isShow = false;
+
+			defer.resolve(index);
+		}
+	}
+}]);
+pageModule.directive('popup', function () {
+	return {
+		restrict: 'A',
+		replace: true,
+		templateUrl: "pages/popup.html",
+		controller: ['$scope', 'popupSrv', function ($scope, popupSrv) {
+			$scope.pop = popupSrv;
+		}]
+	}
 });
 
 /* Home Controller */

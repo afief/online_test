@@ -1,0 +1,9 @@
+<div class="popup" ng-show="pop.isShow">
+	<div class="wrapper">
+		<div class="header">{{ pop.header }}</div>
+		<div class="text">{{pop.text}}</div>
+		<div class="buttons">
+			<div class="button" ng-repeat="but in pop.buttons" ng-click="pop.hide(but.id)">{{ but.text }}</div>
+		</div>
+	</div>
+</div>
